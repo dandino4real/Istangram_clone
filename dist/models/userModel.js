@@ -8,7 +8,5 @@ const userSchema = new mongoose_1.Schema({
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
     salt: { type: String, required: true },
-    token: String,
-    expire_token: Date,
 });
-exports.User = (0, mongoose_1.model)('user', userSchema);
+exports.User = (0, mongoose_1.model)("user", userSchema);

@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.verifyJwtoken = exports.generateSignature = exports.validatePassword = exports.generateHashedPassword = exports.generateSalt = exports.option = exports.registerSchema = void 0;
+exports.verifyJwtoken = exports.generateSignature = exports.validatePassword = exports.generateHashedPassword = exports.generateSalt = exports.option = exports.loginSchema = exports.registerSchema = void 0;
 const joi_1 = __importDefault(require("joi"));
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
@@ -15,6 +15,10 @@ exports.registerSchema = joi_1.default.object().keys({
     password: joi_1.default.string().required().regex(/[A-Za-z0-9]{3,30}/),
     confirm_password: joi_1.default.any().equal(joi_1.default.ref('password')).required().label('confirm password').messages({ 'any.only': '{{#label}} does not match' }),
     phone: joi_1.default.string().required()
+});
+exports.loginSchema = joi_1.default.object().keys({
+    email: joi_1.default.string().required(),
+    password: joi_1.default.string().required().regex(/[A-Za-z0-9]{3,30}/),
 });
 exports.option = {
     abortEarly: false,

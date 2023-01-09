@@ -14,6 +14,12 @@ export const registerSchema = Joi.object().keys({
     phone: Joi.string().required()
 })
 
+export const loginSchema = Joi.object().keys({
+    email: Joi.string().required(),
+    password: Joi.string().required().regex(/[A-Za-z0-9]{3,30}/),
+})
+
+
 export const option = {
     abortEarly: false,
     errors: {

@@ -24,8 +24,6 @@ const Register = async (req, res) => {
                 phone,
                 password: userPassword,
                 salt,
-                token: '',
-                expire_token: ''
             }));
             return res.status(200).json({
                 message: "User created successfully",
@@ -48,7 +46,7 @@ const Login = async (req, res) => {
     try {
         const { email, password } = req.body;
         //validate input
-        const validateInput = utilities_1.registerSchema.validate(req.body, utilities_1.option);
+        const validateInput = utilities_1.loginSchema.validate(req.body, utilities_1.option);
         if (validateInput.error) {
             return res.status(400).json({
                 Error: validateInput.error.details[0].message,
@@ -60,10 +58,13 @@ const Login = async (req, res) => {
             //compare password
             const validation = await (0, utilities_1.validatePassword)(password, user.password, user.salt);
             if (validation) {
-                const token = await (0, utilities_1.generateSignature)({ _id: user._id, email: user.email });
+                const token = await (0, utilities_1.generateSignature)({
+                    _id: user._id,
+                    email: user.email,
+                });
                 res.json({
                     message: "Login successful",
-                    token
+                    token,
                 });
             }
             else {

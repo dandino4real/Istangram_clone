@@ -6,6 +6,7 @@ import {
   generateSignature,
   option,
   registerSchema,
+  loginSchema,
   validatePassword,
 } from "../utils/utilities";
 
@@ -56,7 +57,7 @@ export const Login = async (req: Request, res: Response) => {
     const { email, password } = req.body;
 
     //validate input
-    const validateInput = registerSchema.validate(req.body, option);
+    const validateInput = loginSchema.validate(req.body, option);
     if (validateInput.error) {
       return res.status(400).json({
         Error: validateInput.error.details[0].message,
