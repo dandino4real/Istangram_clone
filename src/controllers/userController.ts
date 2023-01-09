@@ -3,10 +3,13 @@ import { User, UserAtrributes } from "../models/userModel";
 import {
   generateHashedPassword,
   generateSalt,
+  generateSignature,
   option,
   registerSchema,
+  validatePassword,
 } from "../utils/utilities";
 
+//register user
 export const Register = async (req: Request, res: Response) => {
   try {
     const { name, email, phone, password, confirm_password } = req.body;
@@ -17,8 +20,8 @@ export const Register = async (req: Request, res: Response) => {
         Error: validateInput.error.details[0].message,
       });
     }
-    
-//check if user exist
+
+    //check if user exist
     const user = await User.findOne({ email });
     if (!user) {
       const salt = await generateSalt();
@@ -30,8 +33,6 @@ export const Register = async (req: Request, res: Response) => {
         phone,
         password: userPassword,
         salt,
-        token: '',
-        expire_token:''
       })) as unknown as UserAtrributes;
 
       return res.status(200).json({
@@ -41,6 +42,54 @@ export const Register = async (req: Request, res: Response) => {
     } else {
       return res.status(400).json({
         message: "User already exist",
+      });
+    }
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+//login user
+
+export const Login = async (req: Request, res: Response) => {
+  try {
+    const { email, password } = req.body;
+
+    //validate input
+    const validateInput = registerSchema.validate(req.body, option);
+    if (validateInput.error) {
+      return res.status(400).json({
+        Error: validateInput.error.details[0].message,
+      });
+    }
+
+    //check if user exist in db
+    const user = await User.findOne({ email });
+
+    if (user) {
+      //compare password
+      const validation = await validatePassword(
+        password,
+        user.password,
+        user.salt
+      );
+      if (validation) {
+        const token = await generateSignature({
+          _id: user._id,
+          email: user.email,
+        });
+        res.json({
+          message: "Login successful",
+          token,
+        });
+      } else {
+        return res.status(400).json({
+          message: "Invalid email or password",
+        });
+      }
+    } else {
+      return res.status(400).json({
+        message: "Invalid email or password",
       });
     }
   } catch (error) {

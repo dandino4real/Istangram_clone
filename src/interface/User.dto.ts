@@ -1,5 +1,4 @@
-export interface UserPayload{
-    id: string;
-    email: string;
-    verified: boolean
+export interface UserPayload {
+  _id: object;
+  email: string;
 }
