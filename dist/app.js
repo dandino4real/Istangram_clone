@@ -6,9 +6,13 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const mongoose_1 = __importDefault(require("mongoose"));
 const config_1 = require("./config");
+const userRoute_1 = __importDefault(require("./routes/userRoute"));
+// Create a new express application instance
 const app = (0, express_1.default)();
 //middleware
 app.use(express_1.default.json());
+//router middleware
+app.use('/users', userRoute_1.default);
 mongoose_1.default.set('strictQuery', true);
 mongoose_1.default.connect(config_1.MONGODB_URL)
     .then(() => {
